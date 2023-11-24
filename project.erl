@@ -1,5 +1,5 @@
 -module(project).
--export([slave/5, leader/4, start/2, crash/1, init/3]).
+-export([slave/5, leader/4, start/2, crash/1, init/3, init/2, election/4]).
 
 -define(arghh, 100).
 
@@ -21,6 +21,18 @@ slave(Id, Master, Leader, Slaves, Group) ->
             ok
     end.
 
+election(Id, Master, Slaves, [_|Group]) ->
+    Self = self(),
+    case Slaves of
+        [Self|Rest] ->
+            bcast(Id, {view, Slaves, Group}, Rest),
+            Master ! {view, Group},
+            leader(Id, Master, Rest, Group);
+        [Leader|Rest] ->
+            erlang:monitor(process, Leader),
+            slave(Id, Master, Leader, Rest, Group)
+    end.
+
 leader(Id, Master, Slaves, Group) ->
     receive
         {mcast, Msg} ->
@@ -37,6 +49,13 @@ leader(Id, Master, Slaves, Group) ->
             ok
     end.
 
+start(Id, Group) ->
+    Self = self(),
+    {ok, spawn_link(fun() -> init(Id, Group, Self) end)}.
+
+init(Id, Master) ->
+    leader(Id, Master, [], [Master]).
+
 bcast(Id, Msg, Nodes) ->
     lists:foreach(fun(Node) -> Node ! Msg, crash(Id) end, Nodes).
 
@@ -48,10 +67,6 @@ crash(Id) ->
         _ ->
             ok
     end.
-
-start(Id, Grp) ->
-    Self = self(),
-    {ok, spawn_link(fun()-> init(Id, Grp, Self) end)}.
 
 init(Id, Grp, Master) ->
     Self = self(),
