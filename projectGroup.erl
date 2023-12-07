@@ -4,13 +4,15 @@
 %List of members%
 loop(Id, Members) ->
     receive
-        {From, {add, Member}} ->
+        {From, {add, Member, Ids}} ->
             From ! {self(), ok},
             notify(Members, Member),
-            loop(Id, [{Member, Id}| Members]);
+            loop(Id, [{Member, Ids}| Members]);
         {From, get_members} ->
             From ! {self(), Members},
-            loop(Id, Members)
+            loop(Id, Members);
+        {From, Members} ->
+           From ! {self(), acknowledged} 
     end.
 
 %add a member%
@@ -29,6 +31,7 @@ notify (Members, NewMember) ->
             {Id, acknowledged} -> ok
         end
     end, Members).
+
 
 start(Id) ->
     spawn(fun()-> loop(Id, []) end).
