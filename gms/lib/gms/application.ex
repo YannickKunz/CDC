@@ -17,7 +17,7 @@ defmodule Gms.Application do
     IO.inspect(erlang_module_path, label: "Erlang Module Path")
 
     # Ensure the path is added to the Erlang code path
-    :ok = :code.add_pathz(erlang_module_path)
+    :code.add_pathz(erlang_module_path |> to_charlist)
 
     children = [
       GmsWeb.Telemetry,

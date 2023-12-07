@@ -60,7 +60,7 @@ bcast(Id, Msg, Nodes) ->
     lists:foreach(fun(Node) -> Node ! Msg, crash(Id) end, Nodes).
 
 crash(Id) ->
-    case random:uniform(?arghh) of
+    case rand:uniform(?arghh) of
         ?arghh ->
             io:format("leader ~w: crash~n", [Id]),
             exit(no_luck);
