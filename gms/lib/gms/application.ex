@@ -8,16 +8,16 @@ defmodule Gms.Application do
   @impl true
   def start(_type, _args) do
 
-    current_dir = File.cwd!()
+    #current_dir = File.cwd!()
 
     # Path to erlang code
-    erlang_module_path = Path.join([current_dir, "lib", "gms", "server"]) |> IO.chardata_to_string()
+    #erlang_module_path = Path.join([current_dir, "lib", "gms", "server"]) |> IO.chardata_to_string()
 
-    IO.inspect(current_dir, label: "Current Directory")
-    IO.inspect(erlang_module_path, label: "Erlang Module Path")
+    #IO.inspect(current_dir, label: "Current Directory")
+    #IO.inspect(erlang_module_path, label: "Erlang Module Path")
 
     # Ensure the path is added to the Erlang code path
-    :code.add_pathz(erlang_module_path |> to_charlist)
+    #:code.add_pathz(erlang_module_path |> to_charlist)
 
     children = [
       GmsWeb.Telemetry,
@@ -27,7 +27,8 @@ defmodule Gms.Application do
       # Start the Finch HTTP client for sending emails
       {Finch, name: Gms.Finch},
       # start ping pong server
-      { :ping_pong_server, {Gms.Server.PingPongServer, :start_link, [[]]} },
+      #{ :ping_pong_server, {Gms.Server.PingPongServer, :start_link, [[]]} },
+      %{id: PingPongServer, start: {:ping_pong_server,:start_link, []} },
       # Start a worker by calling: Gms.Worker.start_link(arg)
       # {Gms.Worker, arg},
       # Start to serve requests, typically the last entry
