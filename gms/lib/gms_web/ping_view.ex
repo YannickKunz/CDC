@@ -7,8 +7,10 @@ defmodule GmsWeb.PingView do
 
   def render(assigns) do
     ~H"""
-    <div>
-      <button phx-click="ping">Ping Backend</button>
+    <div class="grid grid-cols-3 gap-4">
+      <.button variant="outlined" color="warning" phx-click="ping">Ping Backend</.button>
+    </div>
+    <div class="grid grid-cols-3 gap-4">
       <p>Response: <%= @response %></p>
     </div>
     """
