@@ -1,4 +1,4 @@
-defmodule GmsWeb.Live.PingView do
+defmodule GmsWeb.PingView do
   use GmsWeb, :live_view
 
   def mount(_params, _session, socket) do
@@ -19,6 +19,7 @@ defmodule GmsWeb.Live.PingView do
     # :ping_pong_server: This is the name of the remote node
     # :ping: function you wanna call on the remote node
     # :infinity: we wait for the call no mather how long it takes
+    #IO.inspect(:rpc.call(:ping_pong_server, :ping, [], :infinity))
     case :rpc.call(:ping_pong_server, :ping, [], :infinity) do
       :pong ->
         {:noreply, assign(socket, :response, "Received Pong from Backend")}
