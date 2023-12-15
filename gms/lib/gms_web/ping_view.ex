@@ -8,15 +8,9 @@ defmodule GmsWeb.PingView do
 
   def render(assigns) do
     ~H"""
-    <div class="grid grid-cols-3 gap-4">
-      <.button variant="outlined" color="warning" phx-click="ping">Ping Backend</.button>
-    </div>
-    <div class="grid grid-cols-3 gap-4">
-      <p>Response: <%= @response %></p>
-    </div>
     <div class="card">
             <div class="card-body">
-                <h1 class="card-title">Distributed Membership Service with Multicast</h1>
+                <h1 class="card-title">Distributed Membership Service with Atomic Multicast</h1>
             </div>
         </div>
         <div class="card mt-3">
@@ -29,38 +23,31 @@ defmodule GmsWeb.PingView do
         <div id="groupsContainer" class="groups-container"></div>
         <script>
         function createGroup() {
-            var groupName = document.getElementById('createGroupName').value;
-            var numberOfProcesses = document.getElementById('numberOfProcesses').value;
+          var groupName = document.getElementById('createGroupName').value;
+          var numberOfProcesses = document.getElementById('numberOfProcesses').value;
 
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", '/start', true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(JSON.stringify({
-              "group_name": groupName,
-              "number_of_processes": numberOfProcesses
-            }));
+          // Create a new div for the group
+          var groupDiv = document.createElement('div');
+          groupDiv.className = 'group';
 
-            xhr.onload = function() {
-              if (xhr.status == 200) {
-                // Create a new div for the group
-                var groupDiv = document.createElement('div');
-                groupDiv.className = 'group';
-                groupDiv.innerHTML = '<h2>' + groupName + '</h2>';
+          // Add group name to the div
+          var groupNameH2 = document.createElement('h2');
+          groupNameH2.textContent = groupName;
+          groupDiv.appendChild(groupNameH2);
 
-                // Add process names to the div
-                for (var i = 0; i < numberOfProcesses; i++) {
-                  var processName = 'Process ' + (i + 1);
-                  var processP = document.createElement('p');
-                  processP.textContent = processName;
-                  groupDiv.appendChild(processP);
-                }
-
-                // Add the div to the groups container
-                var groupsContainer = document.getElementById('groupsContainer');
-                groupsContainer.appendChild(groupDiv);
-              }
-            };
+          // Add process names to the div
+          for (var i = 0; i < numberOfProcesses; i++) {
+            var processName = 'Process ' + (i + 1);
+            var processP = document.createElement('p');
+            processP.textContent = processName;
+            groupDiv.appendChild(processP);
           }
+
+          // Add the div to the groups container
+          var groupsContainer = document.getElementById('groupsContainer');
+          groupsContainer.appendChild(groupDiv);
+        }
+
         </script>
         <style>
         .card {
@@ -91,10 +78,19 @@ defmodule GmsWeb.PingView do
       }
 
       .groups-container {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-between;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
       }
+
+      .group {
+        flex: 0 0 calc(33% - 20px); /* This will create 3 groups per row */
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        border-radius: 5px;
+        margin: 10px;
+        padding: 20px;
+        }
 
       .card {
           flex: 0 0 calc(50% - 20px);
@@ -115,7 +111,6 @@ defmodule GmsWeb.PingView do
           display: block;
           margin: 5px auto;
       }
-
         </style>
     """
   end
@@ -138,5 +133,14 @@ defmodule GmsWeb.PingView do
     #     {:noreply, assign(socket, :response, "Error")}
     # end
     {:noreply, assign(socket, :response, "ASDF")}
+    Logger.info :myP.start(:group1, 3)
+      case :myp.start() do
+        :ok ->
+          {:noreply, assign(socket, :response, "Started")}
+        _ ->
+          {:noreply, assign(socket, :response, "Error")}
+      end
+
+
   end
 end
