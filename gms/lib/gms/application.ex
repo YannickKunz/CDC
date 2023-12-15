@@ -28,7 +28,7 @@ defmodule Gms.Application do
       {Finch, name: Gms.Finch},
       # start ping pong server
       #{ :ping_pong_server, {Gms.Server.PingPongServer, :start_link, [[]]} },
-      %{id: PingPongServer, start: {:ping_pong_server,:start_link, []} },
+      # %{id: PingPongServer, start: {:ping_pong_server,:start_link, []} },
       # Start a worker by calling: Gms.Worker.start_link(arg)
       # {Gms.Worker, arg},
       # Start to serve requests, typically the last entry
