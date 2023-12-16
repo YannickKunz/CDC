@@ -19,7 +19,6 @@ defmodule GmsWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
-    get "/start", PageController, :start
 
     # live "/ping", PingView, :mount
     live "/ping", PingView, as: :ping
