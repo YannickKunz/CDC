@@ -9,7 +9,7 @@ defmodule GmsWeb.PingView do
   def render(assigns) do
     ~H"""
     <div class="grid grid-cols-3 gap-4">
-      <.button variant="outlined" color="warning" phx-click="ping">Ping Backend</.button>
+      <.button variant="outlined" color="warning" phx-click="start">Ping Backend</.button>
     </div>
     <div class="grid grid-cols-3 gap-4">
       <p>Response: <%= @response %></p>
@@ -17,7 +17,7 @@ defmodule GmsWeb.PingView do
     """
   end
 
-  def handle_event("ping", _params, socket) do
+  def handle_event("start", _params, socket) do
     Logger.info "PING >>>>>>>>>>>>>>>>>"
     # remote procedure call (RPC) to another node in the system
     # :ping_pong_server: This is the name of the remote node
@@ -26,7 +26,7 @@ defmodule GmsWeb.PingView do
     #IO.inspect(:rpc.call(:ping_pong_server, :ping, [], :infinity))
 
     # GenServer.call(PingPongServer, :ping)
-    Logger.info :ping_pong_server.hello()
+    #Logger.info :ping_pong_server.hello()
     # case :ping_pong_server.ping() do
     # # case :rpc.call(:ping_pong_server, :ping, [], :infinity) do
     #   :pong ->
@@ -34,6 +34,9 @@ defmodule GmsWeb.PingView do
     #   _ ->
     #     {:noreply, assign(socket, :response, "Error")}
     # end
-    {:noreply, assign(socket, :response, "ASDF")}
+    #{:noreply, assign(socket, :response, "ASDF")}
+    case :myP.start(:group1, 3) do
+      {:ok, group_name} -> {:noreply, assign(socket, :response, group_name)}
+    end
   end
 end
