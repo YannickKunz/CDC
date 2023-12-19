@@ -36,13 +36,14 @@ defmodule GmsWeb.PingView do
     # end
     #{:noreply, assign(socket, :response, "ASDF")}
     #iex --name app2
+    Logger.info("self(): #{inspect(self())}")
     Node.connect(:"app@Fabienne.home")
     Logger.info("Inspect Node.connect(:'app@Fabienne.home'): #{inspect(Node.connect(:"app@Fabienne.home"))}")
     Process.register(self(), :node2)
-    Logger.info("Inspect Process.register(self(), :node): #{inspect(Process.register(self(), :node2))}")
+    #Logger.info("Inspect Process.register(self(), :node): #{inspect(Process.register(self(), :node2))}")
     Process.send({:node, :"app@Fabienne.home"}, {:hello, :from, self()}, [])
     Logger.info("Inspect Process.send({:node, :'app@Fabienne.home'}, {:hello, :from, self()}, []): #{inspect(Process.send({:node, :"app@Fabienne.home"}, {:hello, :from, self()}, []))}")
-    Logger.info("self(): #{inspect(self())}")
+
 
     case :myP.start(:group1, 3) do
       {:ok, group_name} -> {:noreply, assign(socket, :response, group_name)}
