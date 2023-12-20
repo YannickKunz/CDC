@@ -9,7 +9,7 @@ defmodule GmsWeb.PingView do
   def render(assigns) do
     ~H"""
     <div class="grid grid-cols-3 gap-4">
-      <.button variant="outlined" color="warning" phx-click="start">Ping Backend</.button>
+      <.button variant="outlined" color="warning" phx-click="message">Message To Backend</.button>
     </div>
     <div class="grid grid-cols-3 gap-4">
       <p>Response: <%= @response %></p>
@@ -18,8 +18,8 @@ defmodule GmsWeb.PingView do
 
   end
 
-  def handle_event("start", _params, socket) do
-    Logger.info "PING >>>>>>>>>>>>>>>>>"
+  def handle_event("message", _params, socket) do
+    Logger.info "Start of the event >>>>>>>>>>>>>>>>>"
     # remote procedure call (RPC) to another node in the system
     # :ping_pong_server: This is the name of the remote node
     # :ping: function you wanna call on the remote node
@@ -40,14 +40,17 @@ defmodule GmsWeb.PingView do
     Node.start(:elixirSide)
     Logger.info("self(): #{inspect(self())}")
     Logger.info("Local node alive: #{inspect(Node.alive?)}")
-    Node.connect(:"app@Fabienne.home")
-    Logger.info("Inspect Node.connect(:'app@Fabienne.home'): #{inspect(Node.connect(:"app@Fabienne.home"))}")
+    Node.connect(:"erlangSide@Fabienne.home")
+    Logger.info("Inspect Node.connect(:'erlangSide@Fabienne.home'): #{inspect(Node.connect(:"erlangSide@Fabienne.home"))}")
     Logger.info("Node.list(): #{inspect(Node.list())} - This shows all visible nodes in the system excluding the local node.")
     Process.register(self(), :node2)
-    Process.send({:node, :"app@Fabienne.home"}, {:hello, :from, self()}, [])
-
-    case :myP.start(:group1, 3) do
+    Process.send({:node, :"erlangSide@Fabienne.home"}, {:hello, :from, self()}, [])
+    #
+    case :myP.start(:group3, 5) do
       {:ok, group_name} -> {:noreply, assign(socket, :response, group_name)}
     end
+    #case :myP.send_message(:group3, "Hello from the elixir frontend") do
+    #  _ -> Logger.info("Successful")
+    #end
   end
 end
