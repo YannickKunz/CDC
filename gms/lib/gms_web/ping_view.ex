@@ -15,7 +15,6 @@ defmodule GmsWeb.PingView do
       <p>Response: <%= @response %></p>
     </div>
     """
-
   end
 
   def handle_event("send_message", _params, socket) do
@@ -40,17 +39,17 @@ defmodule GmsWeb.PingView do
     Node.start(:elixirSide)
     Logger.info("self(): #{inspect(self())}")
     Logger.info("Local node alive: #{inspect(Node.alive?)}")
-    Node.connect(:"erlangSide@Fabienne.home")
-    Logger.info("Inspect Node.connect(:'erlangSide@Fabienne.home'): #{inspect(Node.connect(:"erlangSide@Fabienne.home"))}")
+    Node.connect(:"erlangSide@127.0.0.1")
+    Logger.info("Inspect Node.connect(:'erlangSide@127.0.0.1'): #{inspect(Node.connect(:"erlangSide@127.0.0.1"))}")
     Logger.info("Node.list(): #{inspect(Node.list())} - This shows all visible nodes in the system excluding the local node.")
     Process.register(self(), :node2)
-    Process.send({:node, :"erlangSide@Fabienne.home"}, {:hello, :from, self()}, [])
+    Process.send({:node, :"erlangSide@127.0.0.1"}, {:hello, :from, self()}, [])
     #
     case :myP.start(:group3, 5) do
       {:ok, group_name} -> {:noreply, assign(socket, :response, group_name)}
     end
-    case :myP.send_message_to_group(:group3, :erlangSide@Fabienne.home, :group2 ,"Hello from the elixir frontend") do
-      _ -> Logger.info("Successful")
+    case :myP.send_message_to_group(:group3, :'erlangSide@127.0.0.1', :group2 ,"Hello from the elixir frontend") do
+      _ -> {:noreply, assign(socket, :response, "Successful" )}
     end
   end
   #def handle_event("listmembers", _params, socket) do

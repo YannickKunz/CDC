@@ -35,10 +35,12 @@ defmodule Gms.Application do
       GmsWeb.Endpoint
     ]
 
+
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Gms.Supervisor]
     Supervisor.start_link(children, opts)
+
   end
 
   # Tell Phoenix to update the endpoint configuration
