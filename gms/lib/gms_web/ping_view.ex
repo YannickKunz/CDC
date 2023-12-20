@@ -36,7 +36,7 @@ defmodule GmsWeb.PingView do
     # end
     #{:noreply, assign(socket, :response, "ASDF")}
     #iex --name app2
-    Node.start(:elixirSide)
+    Node.start(:'elixirSide@127.0.0.1')
     Logger.info("self(): #{inspect(self())}")
     Logger.info("Local node alive: #{inspect(Node.alive?)}")
     Node.connect(:"erlangSide@127.0.0.1")
@@ -52,9 +52,4 @@ defmodule GmsWeb.PingView do
       _ -> {:noreply, assign(socket, :response, "Successful" )}
     end
   end
-  #def handle_event("listmembers", _params, socket) do
-  #  case :myP.list_members(:group3) do
-  #    {:ok, members} -> {:noreply, assign(socket, :, members)}
-  #  end
-  #end
 end
