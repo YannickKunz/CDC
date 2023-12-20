@@ -15,6 +15,7 @@ defmodule GmsWeb.PingView do
       <p>Response: <%= @response %></p>
     </div>
     """
+
   end
 
   def handle_event("start", _params, socket) do
@@ -36,14 +37,14 @@ defmodule GmsWeb.PingView do
     # end
     #{:noreply, assign(socket, :response, "ASDF")}
     #iex --name app2
+    Node.start(:elixirSide)
     Logger.info("self(): #{inspect(self())}")
+    Logger.info("Local node alive: #{inspect(Node.alive?)}")
     Node.connect(:"app@Fabienne.home")
     Logger.info("Inspect Node.connect(:'app@Fabienne.home'): #{inspect(Node.connect(:"app@Fabienne.home"))}")
+    Logger.info("Node.list(): #{inspect(Node.list())} - This shows all visible nodes in the system excluding the local node.")
     Process.register(self(), :node2)
-    #Logger.info("Inspect Process.register(self(), :node): #{inspect(Process.register(self(), :node2))}")
     Process.send({:node, :"app@Fabienne.home"}, {:hello, :from, self()}, [])
-    Logger.info("Inspect Process.send({:node, :'app@Fabienne.home'}, {:hello, :from, self()}, []): #{inspect(Process.send({:node, :"app@Fabienne.home"}, {:hello, :from, self()}, []))}")
-
 
     case :myP.start(:group1, 3) do
       {:ok, group_name} -> {:noreply, assign(socket, :response, group_name)}
