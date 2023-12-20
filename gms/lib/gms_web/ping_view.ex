@@ -9,7 +9,7 @@ defmodule GmsWeb.PingView do
   def render(assigns) do
     ~H"""
     <div class="grid grid-cols-3 gap-4">
-      <.button variant="outlined" color="warning" phx-click="message">Message To Backend</.button>
+      <.button phx-click="send_message">Message To Backend</.button>
     </div>
     <div class="grid grid-cols-3 gap-4">
       <p>Response: <%= @response %></p>
@@ -18,7 +18,7 @@ defmodule GmsWeb.PingView do
 
   end
 
-  def handle_event("message", _params, socket) do
+  def handle_event("send_message", _params, socket) do
     Logger.info "Start of the event >>>>>>>>>>>>>>>>>"
     # remote procedure call (RPC) to another node in the system
     # :ping_pong_server: This is the name of the remote node
@@ -49,8 +49,13 @@ defmodule GmsWeb.PingView do
     case :myP.start(:group3, 5) do
       {:ok, group_name} -> {:noreply, assign(socket, :response, group_name)}
     end
-    #case :myP.send_message(:group3, "Hello from the elixir frontend") do
-    #  _ -> Logger.info("Successful")
-    #end
+    case :myP.send_message_to_group(:group3, :erlangSide@Fabienne.home, :group2 ,"Hello from the elixir frontend") do
+      _ -> Logger.info("Successful")
+    end
   end
+  #def handle_event("listmembers", _params, socket) do
+  #  case :myP.list_members(:group3) do
+  #    {:ok, members} -> {:noreply, assign(socket, :, members)}
+  #  end
+  #end
 end
