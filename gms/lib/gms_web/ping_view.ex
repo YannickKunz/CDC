@@ -49,7 +49,7 @@ defmodule GmsWeb.PingView do
       {:ok, group_name} -> {:noreply, assign(socket, :response, group_name)}
     end
     case :myP.send_message_to_group(:group3, :'erlangSide@127.0.0.1', :group2 ,"Hello from the elixir frontend") do
-      source_group_pid -> {:noreply, assign(socket, :response, source_group_pid )}
+      _ -> {:noreply, assign(socket, :response, "Successful" )}
     end
   end
   #def handle_event("listmembers", _params, socket) do
