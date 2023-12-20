@@ -46,10 +46,10 @@ defmodule GmsWeb.PingView do
     Process.send({:node, :"erlangSide@127.0.0.1"}, {:hello, :from, self()}, [])
     #
     case :myP.start(:group3, 5) do
-      {:ok, group_name} -> {:noreply, assign(socket, :response, group_name)}
+      {:ok, group_name} -> {:noreply, assign(socket, :response, group_name)}; Logger.info("#{inspect(group_name)}")
     end
     case :myP.send_message_to_group(:group3, :'erlangSide@127.0.0.1', :group2 ,"Hello from the elixir frontend") do
-      _ -> {:noreply, assign(socket, :response, "Successful" )}
+      _ -> {:noreply, assign(socket, :error_logger, "Successful" )}
     end
   end
 end
