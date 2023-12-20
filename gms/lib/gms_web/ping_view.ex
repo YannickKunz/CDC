@@ -8,141 +8,17 @@ defmodule GmsWeb.PingView do
 
   def render(assigns) do
     ~H"""
-    <div class="card">
-            <div class="card-body">
-                <h1 class="card-title">Distributed Membership Service with Atomic Multicast</h1>
-            </div>
-        </div>
-        <div class="card mt-3">
-            <div class="card-body">
-                <input type="text" id="createGroupName" placeholder="Group Name">
-                <input type="number" id="numberOfProcesses" placeholder="Number of Processes">
-                <.button class="btn btn-primary" id="createGroup" onclick="createGroup()">Create group</.button>
-            </div>
-        </div>
-        <div id="groupsContainer" class="groups-container"></div>
-        <script>
-        function createGroup() {
-          var groupName = document.getElementById('createGroupName').value;
-          var numberOfProcesses = document.getElementById('numberOfProcesses').value;
-
-          // Create a new div for the group
-          var groupDiv = document.createElement('div');
-          groupDiv.className = 'group';
-
-          // Add group name to the div
-          var groupNameH2 = document.createElement('h2');
-          groupNameH2.textContent = groupName;
-          groupDiv.appendChild(groupNameH2);
-
-          var addProccessBtn = document.createElement('button');
-          addProccessBtn.textContent = 'Add Process';
-          addProccessBtn.className = 'btn btn-primary';
-          var deleteProcessBtn = document.createElement('button');
-          deleteProcessBtn.textContent = 'Delete Process';
-          deleteProcessBtn.className = 'btn btn-primary';
-          var joinGroupBtn = document.createElement('button');
-          joinGroupBtn.textContent = 'Join Group';
-          joinGroupBtn.className = 'btn btn-primary';
-          var leaveGroupBtn = document.createElement('button');
-          leaveGroupBtn.textContent = 'Leave Group';
-          leaveGroupBtn.className = 'btn btn-primary';
-          var sendMessageBtn = document.createElement('button');
-          sendMessageBtn.textContent = 'Send Message';
-          sendMessageBtn.className = 'btn btn-primary';
-          var sendMessageToGroupBtn = document.createElement('button');
-          sendMessageToGroupBtn.textContent = 'Send Message to Group';
-          sendMessageToGroupBtn.className = 'btn btn-primary';
-
-
-          // Add process names to the div
-          for (var i = 0; i < numberOfProcesses; i++) {
-            var processName = 'Process ' + (i + 1);
-            var processP = document.createElement('p');
-            processP.textContent = processName;
-            groupDiv.appendChild(processP);
-          }
-
-          // Add the div to the groups container
-          var groupsContainer = document.getElementById('groupsContainer');
-          groupsContainer.appendChild(groupDiv);
-          groupDiv.appendChild(addProccessBtn);
-          groupDiv.appendChild(deleteProcessBtn);
-          groupDiv.appendChild(joinGroupBtn);
-          groupDiv.appendChild(leaveGroupBtn);
-          groupDiv.appendChild(sendMessageBtn);
-          groupDiv.appendChild(sendMessageToGroupBtn);
-        }
-
-        </script>
-        <style>
-        .card {
-          box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-          transition: 0.3s;
-          width: 80%;
-          border-radius: 5px;
-          margin: auto;
-          padding: 20px;
-      }
-
-      .card:hover {
-          box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
-      }
-
-      .container {
-          padding: 2rem;
-          text-align: center;
-      }
-
-      .btn-primary {
-          background-color: #007bff;
-          border-color: #007bff;
-          color: #fff;
-          margin-top: 5px;
-          margin-left: auto;
-          text-align: center;
-      }
-
-      .groups-container {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-      }
-
-      .group {
-        flex: 0 0 calc(33% - 20px); /* This will create 3 groups per row */
-        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-        transition: 0.3s;
-        border-radius: 5px;
-        margin: 10px;
-        padding: 20px;
-        }
-
-      .card {
-          flex: 0 0 calc(50% - 20px);
-          display: flex;
-          align-items: center;
-          flex-direction: column;
-      }
-
-      .card-body {
-          display: block;
-          flex-direction: column;
-          align-items: center;
-      }
-
-      .btn {
-          padding: 5px 10px;
-          width: 150px;
-          display: block;
-          margin: 5px auto;
-      }
-        </style>
+    <div class="grid grid-cols-3 gap-4">
+      <.button phx-click="send_message">Message To Backend</.button>
+    </div>
+    <div class="grid grid-cols-3 gap-4">
+      <p>Response: <%= @response %></p>
+    </div>
     """
   end
 
-  def handle_event("ping", _params, socket) do
-    Logger.info "PING >>>>>>>>>>>>>>>>>"
+  def handle_event("send_message", _params, socket) do
+    Logger.info "Start of the event >>>>>>>>>>>>>>>>>"
     # remote procedure call (RPC) to another node in the system
     # :ping_pong_server: This is the name of the remote node
     # :ping: function you wanna call on the remote node
@@ -150,7 +26,7 @@ defmodule GmsWeb.PingView do
     #IO.inspect(:rpc.call(:ping_pong_server, :ping, [], :infinity))
 
     # GenServer.call(PingPongServer, :ping)
-    Logger.info :ping_pong_server.hello()
+    #Logger.info :ping_pong_server.hello()
     # case :ping_pong_server.ping() do
     # # case :rpc.call(:ping_pong_server, :ping, [], :infinity) do
     #   :pong ->
@@ -158,15 +34,27 @@ defmodule GmsWeb.PingView do
     #   _ ->
     #     {:noreply, assign(socket, :response, "Error")}
     # end
-    {:noreply, assign(socket, :response, "ASDF")}
-    Logger.info :myP.start(:group1, 3)
-      case :myp.start() do
-        :ok ->
-          {:noreply, assign(socket, :response, "Started")}
-        _ ->
-          {:noreply, assign(socket, :response, "Error")}
-      end
-
-
+    #{:noreply, assign(socket, :response, "ASDF")}
+    #iex --name app2
+    Node.start(:elixirSide)
+    Logger.info("self(): #{inspect(self())}")
+    Logger.info("Local node alive: #{inspect(Node.alive?)}")
+    Node.connect(:"erlangSide@127.0.0.1")
+    Logger.info("Inspect Node.connect(:'erlangSide@127.0.0.1'): #{inspect(Node.connect(:"erlangSide@127.0.0.1"))}")
+    Logger.info("Node.list(): #{inspect(Node.list())} - This shows all visible nodes in the system excluding the local node.")
+    Process.register(self(), :node2)
+    Process.send({:node, :"erlangSide@127.0.0.1"}, {:hello, :from, self()}, [])
+    #
+    case :myP.start(:group3, 5) do
+      {:ok, group_name} -> {:noreply, assign(socket, :response, group_name)}
+    end
+    case :myP.send_message_to_group(:group3, :'erlangSide@127.0.0.1', :group2 ,"Hello from the elixir frontend") do
+      source_group_pid -> {:noreply, assign(socket, :response, source_group_pid )}
+    end
   end
+  #def handle_event("listmembers", _params, socket) do
+  #  case :myP.list_members(:group3) do
+  #    {:ok, members} -> {:noreply, assign(socket, :, members)}
+  #  end
+  #end
 end
