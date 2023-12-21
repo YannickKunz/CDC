@@ -39,7 +39,7 @@ defmodule GmsWeb.PingView do
     end
     # send a message from group3 on this node to group2 on the erlang node
     case :myP.send_message_to_group(:group3, :'erlangSide@127.0.0.1', :group2 ,"Hello from the elixir frontend") do
-      _ -> {:noreply, assign(socket, :error_logger, "Successful" )}
+      _ -> {:noreply, assign(socket, :response, "Successful" )}
     end
   end
 end
