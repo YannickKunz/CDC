@@ -17,37 +17,22 @@ defmodule GmsWeb.PingView do
     """
   end
 
+  #Node.stop()
+
   def handle_event("send_message", _params, socket) do
     Logger.info "Start of the event >>>>>>>>>>>>>>>>>"
-    # remote procedure call (RPC) to another node in the system
-    # :ping_pong_server: This is the name of the remote node
-    # :ping: function you wanna call on the remote node
-    # :infinity: we wait for the call no mather how long it takes
-    #IO.inspect(:rpc.call(:ping_pong_server, :ping, [], :infinity))
-
-    # GenServer.call(PingPongServer, :ping)
-    #Logger.info :ping_pong_server.hello()
-    # case :ping_pong_server.ping() do
-    # # case :rpc.call(:ping_pong_server, :ping, [], :infinity) do
-    #   :pong ->
-    #     {:noreply, assign(socket, :response, "Received Pong from Backend")}
-    #   _ ->
-    #     {:noreply, assign(socket, :response, "Error")}
-    # end
-    #{:noreply, assign(socket, :response, "ASDF")}
-    #iex --name app2
-    Node.start(:elixirSide)
-    Logger.info("self(): #{inspect(self())}")
-    Logger.info("Local node alive: #{inspect(Node.alive?)}")
-    Node.connect(:"erlangSide@127.0.0.1")
-    Logger.info("Inspect Node.connect(:'erlangSide@127.0.0.1'): #{inspect(Node.connect(:"erlangSide@127.0.0.1"))}")
-    Logger.info("Node.list(): #{inspect(Node.list())} - This shows all visible nodes in the system excluding the local node.")
-    Process.register(self(), :node2)
-    Process.send({:node, :"erlangSide@127.0.0.1"}, {:hello, :from, self()}, [])
-    #
-    case :myP.start(:group3, 5) do
-      {:ok, group_name} -> {:noreply, assign(socket, :response, group_name)}
-    end
+    #Logger.info("Node.list().group_name #{inspect(Node.list().group_name)}")
+    # Create a node for the elixir frontend
+    #Node.start(:'elixirSide@127.0.0.1')
+    #Logger.info("self(): #{inspect(self())}")
+    #Logger.info("Local node alive: #{inspect(Node.alive?)}")
+    #Node.connect(:"erlangSide@127.0.0.1")
+    #Logger.info("Inspect Node.connect(:'erlangSide@127.0.0.1'): #{inspect(Node.connect(:"erlangSide@127.0.0.1"))}")
+    #Logger.info("Node.list(): #{inspect(Node.list())} - This shows all visible nodes in the system excluding the local node.")
+    #Process.register(self(), :node2)
+    #Process.send({:node, :"erlangSide@127.0.0.1"}, {:hello, :from, self()}, [])
+    # create a group named group3 with 5 processes
+    # send a message from group3 on this node to group2 on the erlang node
     case :myP.send_message_to_group(:group3, :'erlangSide@127.0.0.1', :group2 ,"Hello from the elixir frontend") do
       _ -> {:noreply, assign(socket, :response, "Successful" )}
     end
