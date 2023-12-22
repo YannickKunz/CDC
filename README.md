@@ -1,6 +1,7 @@
-How to run our service without the frontend (Example using 3 terminals)
-In order to access our code you can go to our repository on github and clone the project to your local environment (link to repository).
-After this open three new terminals and navigate our backend code (file: myP.erl) which you find in the project in the folder CDC\gms\src.
+This is easier to read in the report pdf file :) <br>
+How to run our service without the frontend (Example using 3 terminals) <br>
+In order to access our code you can go to our repository on github and clone the project to your local environment (link to repository). <br>
+After this open three new terminals and navigate our backend code (file: myP.erl) which you find in the project in the folder CDC\gms\src. <br>
 ·	In terminal1 enter : “erl -name ‘node1@127.0.0.1’ “
 ·	In terminal2 enter : “erl -name ‘node2@127.0.0.1’ “
 ·	In terminal3 enter : “erl -name ‘node3@127.0.0.1’ “
