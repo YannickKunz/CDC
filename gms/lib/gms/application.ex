@@ -9,21 +9,6 @@ defmodule Gms.Application do
   @impl true
   def start(_type, _args) do
 
-    Node.start(:'elixirSide@127.0.0.1')
-    # Create a node for the elixir frontend
-    Logger.info("self(): #{inspect(self())}")
-    Logger.info("Local node alive: #{inspect(Node.alive?)}")
-    # Connect this node with an erlang node (the erlang node needs to be created before running this code)
-    Node.connect(:"erlangSide@127.0.0.1")
-    Logger.info("Inspect Node.connect(:'erlangSide@127.0.0.1'): #{inspect(Node.connect(:"erlangSide@127.0.0.1"))}")
-    Logger.info("Node.list(): #{inspect(Node.list())} - This shows all visible nodes in the system excluding the local node.")
-    # Register a name to the local node
-    Process.register(self(), :node)
-    case :myP.start(:group3, 5) do
-      {:ok, group_name} -> Logger.info("Group_name start: #{inspect(group_name)}")
-    end
-
-
     #current_dir = File.cwd!()
 
     # Path to erlang code
