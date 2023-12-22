@@ -8,6 +8,7 @@ start(GroupName, NumberOfProcesses) ->
     Pids = create_processes(NumberOfProcesses, []),
     register(GroupName, spawn(?MODULE, group_loop, [GroupName, Pids, []])),
     {ok, GroupName}.
+    
 
 % add_process/1 function adds a new process to a group.
 add_process(GroupName) ->
