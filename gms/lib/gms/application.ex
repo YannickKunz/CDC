@@ -9,17 +9,22 @@ defmodule Gms.Application do
   @impl true
   def start(_type, _args) do
 
-
-    #current_dir = File.cwd!()
-
-    # Path to erlang code
-    #erlang_module_path = Path.join([current_dir, "lib", "gms", "server"]) |> IO.chardata_to_string()
-
-    #IO.inspect(current_dir, label: "Current Directory")
-    #IO.inspect(erlang_module_path, label: "Erlang Module Path")
-
-    # Ensure the path is added to the Erlang code path
-    #:code.add_pathz(erlang_module_path |> to_charlist)
+    # Create a node for the elixir frontend
+    Node.start(:'elixirSide@127.0.0.1')
+    #Logger.info("self(): #{inspect(self())}")
+    #Logger.info("Local node alive: #{inspect(Node.alive?)}")
+    # Connect this node with an erlang node (the erlang node needs to be created before running this code)
+    Node.connect(:"erlangSide@127.0.0.1")
+    #Logger.info("Inspect Node.connect(:'erlangSide@127.0.0.1'): #{inspect(Node.connect(:"erlangSide@127.0.0.1"))}")
+    #Logger.info("Node.list(): #{inspect(Node.list())} - This shows all visible nodes in the system excluding the local node.")
+    # Register a name to the local node
+    Process.register(self(), :node)
+    # Send a message to the erlang node to check the connection
+    # Process.send({:node, :"erlangSide@127.0.0.1"}, {:hello, :from, self()}, [])
+    # create a group named group3 with 5 processes
+    case :myP.start(:group3, 5) do
+      {:ok, group_name} -> Logger.info("####################################################### application.ex group_name #{inspect(group_name)}")
+    end
 
     children = [
       GmsWeb.Telemetry,
@@ -28,11 +33,6 @@ defmodule Gms.Application do
       {Phoenix.PubSub, name: Gms.PubSub},
       # Start the Finch HTTP client for sending emails
       {Finch, name: Gms.Finch},
-      # start ping pong server
-      #{ :ping_pong_server, {Gms.Server.PingPongServer, :start_link, [[]]} },
-      # %{id: PingPongServer, start: {:ping_pong_server,:start_link, []} },
-      # Start a worker by calling: Gms.Worker.start_link(arg)
-      # {Gms.Worker, arg},
       # Start to serve requests, typically the last entry
       GmsWeb.Endpoint
     ]
