@@ -6,11 +6,16 @@ defmodule GmsWeb.PingView do
     {:ok, assign(socket, :response, "")}
   end
 
-  # Button & response field
   def render(assigns) do
     ~H"""
     <div class="grid grid-cols-3 gap-4">
-      <.button phx-click="send_message">Message To Backend</.button>
+      <.button variant="outlined" color="warning" phx-click="start">Start</.button>
+    </div>
+    <div class="grid grid-cols-3 gap-4">
+      <p>Response: <%= @response %></p>
+    </div>
+    <div class="grid grid-cols-3 gap-4">
+      <.button variant="outlined" color="warning" phx-click="send_message">Send Message</.button>
     </div>
     <div class="grid grid-cols-3 gap-4">
       <p>Response: <%= @response %></p>
@@ -18,7 +23,9 @@ defmodule GmsWeb.PingView do
     """
   end
 
-  def handle_event("send_message", _params, socket) do
+  #Node.stop()
+
+  def handle_event("start", _params, socket) do
     Logger.info "Start of the event >>>>>>>>>>>>>>>>>"
 
     # Create a node for the elixir frontend
@@ -37,9 +44,22 @@ defmodule GmsWeb.PingView do
     case :myP.start(:group3, 5) do
       {:ok, group_name} -> {:noreply, assign(socket, :response, group_name)}; Logger.info("#{inspect(group_name)}")
     end
-    # send a message from group3 on this node to group2 on the erlang node
-    case :myP.send_message_to_group(:group3, :'erlangSide@127.0.0.1', :group2 ,"Hello from the elixir frontend") do
-      _ -> {:noreply, assign(socket, :response, "Successful" )}
+    case :myP.start(:group1, 3) do
+      {:ok, group_name} -> {:noreply, assign(socket, :response, group_name)}; Logger.info("#{inspect(group_name)}")
     end
+
   end
+
+  def handle_event("send_message", _params, socket) do
+        # send a message from group3 on this node to group2 on the erlang node
+        case :myP.send_message_to_group(:group1, :'erlangSide@127.0.0.1', :group2 ,"Hello from group3 on the elixir frontend") do
+          _ -> {:noreply, assign(socket, :response, "Successful" )}
+        end
+
+        case :myP.send_message_to_group(:group3, :'erlangSide2@127.0.0.1', :group2 ,"Hello from group1 on the elixir frontend") do
+          _ -> {:noreply, assign(socket, :response, "Successful" )}
+        end
+  end
+
+
 end

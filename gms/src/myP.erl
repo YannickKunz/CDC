@@ -7,6 +7,7 @@ start(GroupName, NumberOfProcesses) ->
     Pids = create_processes(NumberOfProcesses, []),
     register(GroupName, spawn(?MODULE, group_loop, [GroupName, Pids, []])),
     {ok, GroupName}.
+    
 
 add_process(GroupName) ->
     GroupPid = whereis(GroupName),

@@ -8,6 +8,7 @@ defmodule Gms.Application do
   @impl true
   def start(_type, _args) do
 
+
     #current_dir = File.cwd!()
 
     # Path to erlang code
