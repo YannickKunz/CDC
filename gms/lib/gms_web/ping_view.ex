@@ -23,6 +23,8 @@ defmodule GmsWeb.PingView do
     """
   end
 
+  #Node.stop()
+
   def handle_event("start", _params, socket) do
     Logger.info "Start of the event >>>>>>>>>>>>>>>>>"
 
